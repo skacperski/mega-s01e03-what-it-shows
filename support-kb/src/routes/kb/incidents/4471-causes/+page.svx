@@ -8,19 +8,13 @@ signature: Seb
 ---
 
 <script>
-  import reports from '#lib/data/reports-4471.json';
-  import notes from '#lib/data/desk-notes.json';
-  import { uniqueById } from '#lib/kb/causes';
   import CauseTable from '#lib/kb/CauseTable.svelte';
   import RenderStamp from '#lib/kb/RenderStamp.svelte';
 
   const { signature } = metadata;
-  const uniqueReports = uniqueById(reports);
-  const duplicateRows = reports.length - uniqueReports.length;
-  const oneDayReports = notes.oneDayMove.join(', ');
 </script>
 
-Ticket #4471 was marked as one parser issue, but the reports describe two causes. The export contains {reports.length} rows for {uniqueReports.length} unique report IDs, including {duplicateRows} duplicate rows. Count each ID once.
+Ticket #4471 was marked as one parser issue. The KB groups the reports by cause and counts each report ID once, even if it appears more than once in the export.
 
 ## Causes
 
@@ -34,7 +28,7 @@ Intake tags are guesses, so the cause grouping uses tenant locale, form, and cha
 
 ## Follow-up
 
-The desk separately flagged {oneDayReports} as one-day moves. They currently fall in the parser group; review their details before concluding whether all share that cause.
+The desk flagged reports as one-day moves in `desk-notes.json`. The current code counts them in the parser group; review their descriptions before treating their symptoms as proof of another cause.
 
 ## Tickets
 
