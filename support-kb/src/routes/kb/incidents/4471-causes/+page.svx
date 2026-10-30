@@ -1,0 +1,44 @@
+---
+layout: runbook
+title: '#4471 · two date causes'
+owner: Seb
+status: known
+reviewed: 2026-10-30
+signature: Seb
+---
+
+<script>
+  import reports from '#lib/data/reports-4471.json';
+  import notes from '#lib/data/desk-notes.json';
+  import { uniqueById } from '#lib/kb/causes';
+  import CauseTable from '#lib/kb/CauseTable.svelte';
+  import RenderStamp from '#lib/kb/RenderStamp.svelte';
+
+  const { signature } = metadata;
+  const uniqueReports = uniqueById(reports);
+  const duplicateRows = reports.length - uniqueReports.length;
+  const oneDayReports = notes.oneDayMove.join(', ');
+</script>
+
+Ticket #4471 was marked as one parser issue, but the reports describe two causes. The export contains {reports.length} rows for {uniqueReports.length} unique report IDs, including {duplicateRows} duplicate rows. Count each ID once.
+
+## Causes
+
+The table describes the desk's original ticket grouping in the export. It does not reflect the follow-up GitHub issues below.
+
+<CauseTable ticket={4471} />
+
+The shared parser reads dates month first even when the tenant's locale writes the day first. The `booking-v3` form has a separate problem: its `MM/DD/YYYY` hint conflicts with day-first tenants' date conventions. The hint and parser need to agree with the tenant's configured date format.
+
+Intake tags are guesses, so the cause grouping uses tenant locale, form, and channel instead of trusting the tag.
+
+## Follow-up
+
+The desk separately flagged {oneDayReports} as one-day moves. They currently fall in the parser group; review their details before concluding whether all share that cause.
+
+## Tickets
+
+- [Parse day-first dates according to each tenant's locale](https://github.com/skacperski/mega-s01e03-what-it-shows/issues/1).
+- [Align booking-v3 date hints with day-first tenant locales](https://github.com/skacperski/mega-s01e03-what-it-shows/issues/2).
+
+<RenderStamp {signature} />
